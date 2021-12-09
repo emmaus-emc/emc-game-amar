@@ -1,7 +1,6 @@
 /* Game opdracht
    Informatica - Emmauscollege Rotterdam
    Template voor een game in JavaScript met de p5 library
-
    Begin met dit template voor je game opdracht,
    voeg er je eigen code aan toe.
  */
@@ -16,6 +15,14 @@ var spelStatus = SPELEN;
 
 var spelerX = 625; // x-positie van speler
 var spelerY = 400; // y-positie van speler
+var vijandX = 625;
+var vijandY = 50;
+var kogelX = 300;
+var kogelY = 0;
+var hp = 100;
+var points = 0;
+var vijandXlijst = [150, 300, 450, 600, 750, 900, 1050, 1200];
+var vijandYlijst = [0];
 
 /* ********************************************* */
 /* functies die je gebruikt in je game           */
@@ -24,13 +31,8 @@ var spelerY = 400; // y-positie van speler
 /**
  * Updatet globale variabelen met posities van speler, vijanden en kogels
  */
-
 var beweegAlles = function () {
-  // vijand
-
-  // kogel
-
- 
+//speler
       if (keyIsDown(37)) {
 spelerX = spelerX - 3;
     }
@@ -64,7 +66,8 @@ spelerX = spelerX + 3;
 
 
     }
-
+    //vijand
+ vijandY = vijandY + 10;
 };
 
 /**
@@ -73,10 +76,42 @@ spelerX = spelerX + 3;
  * Updatet globale variabelen punten en health
  */
 var verwerkBotsing = function () {
-  // botsing speler tegen vijand
+  if (spelerX > 1280) {
+    spelerX = 1280;
+  }
+  if (spelerY > 720) {
+    spelerY = 720;
+  }
+  if (spelerX < 0) {
+    spelerX = 0;
+  }
+  if (spelerY < 0) {
+    spelerY = 0;
+  }
+  if (vijandY > 720) {
+    vijandY = 0;
+  }
+
+for (var i = 0; i < 8; i = i + 1) {
+    if (vijandXlijst[i] - spelerX < 10 &&
+      vijandXlijst[i] - spelerX > -10 &&
+      vijandY - spelerY < 10 &&
+      vijandY - spelerY > -10) {
+      console.log("geraakt");
+      hp = hp - 1;
+    }
+  }
+
+
+
 
   // botsing kogel tegen vijand
+  for (var i = 0; i < 8; i = i + 1) {
+    if (kogelX - vijandXlijst[i] < 50 && kogelX - vijandXlijst[i] > -50 && kogelY - vijandY < 50 && kogelY - vijandY > -50) {
+      console.log("geraakt");
 
+    }
+  }
 };
 
 /**
@@ -84,19 +119,41 @@ var verwerkBotsing = function () {
  */
 var tekenAlles = function () {
   // achtergrond
+createCanvas(1280, 720);
 
+  fill(42, 212, 198);
+  rect(0, 0, 1280, 720);
+  // Kleur de achtergrond blauw, zodat je het kunt zien
+  background('white');
   // vijand
+fill("red")
+for
+  (var i = 0; i < 8; i = i + 1) {
+    ellipse(vijandXlijst[i], vijandY - 25, 50, 50);
+  }
 
   // kogel
 
   // speler
-  fill("white");
-  rect(spelerX - 25, spelerY - 25, 50, 50);
   fill("black");
+  rect(spelerX - 25, spelerY - 25, 50, 50);
+  fill("red");
   ellipse(spelerX, spelerY, 10, 10);
 
   // punten en health
+textSize(64);
+fill("black");
+  text(hp, 20, 60);
+  points = points + 1 / 50;
+  text('Points: \n' + floor(points), 1000, 50)
 
+  if (vijandX - spelerX < 50 &&
+    vijandX - spelerX > -50 &&
+    vijandY - spelerY < 50 &&
+    vijandY - spelerY > -50) {
+    
+    hp = hp - 1;
+    }
 };
 
 /**
@@ -104,7 +161,13 @@ var tekenAlles = function () {
  * anders return false
  */
 var checkGameOver = function () {
-  return false;
+  if (hp <= 0) {
+    return true
+  }
+  else {
+    return false;
+  }
+
 };
 
 /* ********************************************* */
@@ -116,13 +179,7 @@ var checkGameOver = function () {
  * de code in deze functie wordt één keer uitgevoerd door
  * de p5 library, zodra het spel geladen is in de browser
  */
-function setup() {
-  // Maak een canvas (rechthoek) waarin je je speelveld kunt tekenen
-  createCanvas(1280, 720);
 
-  // Kleur de achtergrond blauw, zodat je het kunt zien
-  background (13, 219, 255);
-}
 
 /**
  * draw
@@ -134,12 +191,20 @@ function draw() {
     beweegAlles();
     verwerkBotsing();
     tekenAlles();
-    if (checkGameOver()) {
+    if (checkGameOver(hp < 1)) {
+
       spelStatus = GAMEOVER;
     }
   }
   if (spelStatus === GAMEOVER) {
     // teken game-over scherm
+  textSize(150)
+    fill('black')
+    text('Game over',250,360)
+    textsize(90)
+    fill('black')
+    text('score'+ floor(points), 170, 340)
 
   }
 }
+ 
